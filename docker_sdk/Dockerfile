@@ -1,4 +1,5 @@
-FROM ubuntu:18.04
+#FROM ubuntu:19.04
+FROM intelopencl/intel-opencl:ubuntu-18.04-ppa
 
 ARG DOWNLOAD_LINK=http://registrationcenter-download.intel.com/akdlm/irc_nas/16057/l_openvino_toolkit_p_2019.3.376.tgz
 ARG INSTALL_DIR=/opt/intel/openvino
@@ -21,9 +22,7 @@ RUN mkdir -p $TEMP_DIR && cd $TEMP_DIR && \
 
 RUN $INSTALL_DIR/install_dependencies/install_openvino_dependencies.sh
 
-# build Inference Engine samples
 RUN mkdir $INSTALL_DIR/deployment_tools/inference_engine/samples/build && cd $INSTALL_DIR/deployment_tools/inference_engine/samples/build && \
-    /bin/bash -c "source $INSTALL_DIR/bin/setupvars.sh && cmake .. && make -j1"
+    /bin/bash -c "source $INSTALL_DIR/bin/setupvars.sh && cmake .. && make -j"
 
-# build and run inference engine benchmark app
-RUN cd $INSTALL_DIR/deployment_tools/demo && ./demo_benchmark_app.sh -d CPU
+RUN echo "source $INSTALL_DIR/bin/setupvars.sh" >> /root/.bashrc
