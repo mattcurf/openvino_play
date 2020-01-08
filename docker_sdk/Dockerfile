@@ -1,4 +1,4 @@
-#FROM ubuntu:19.04
+#FROM ubuntu:18.04
 FROM intelopencl/intel-opencl:ubuntu-18.04-ppa
 
 ARG DOWNLOAD_LINK=http://registrationcenter-download.intel.com/akdlm/irc_nas/16057/l_openvino_toolkit_p_2019.3.376.tgz
