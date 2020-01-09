@@ -1,4 +1,5 @@
-FROM ubuntu:16.04
+#FROM ubuntu:16.04
+FROM intelopencl/intel-opencl:ubuntu-16.04-ppa
 
 USER root
 
@@ -39,3 +40,5 @@ RUN apt-get update && \
 RUN cd /open_model_zoo/tools/downloader && \
     python3 ./downloader.py --name squeezenet1.1 --output_dir /root/openvino_models/models --cache_dir /root//openvino_models/cache && \
     python3 ./converter.py --mo /dldt/model-optimizer/mo.py --name squeezenet1.1 -d /root/openvino_models/models -o /root//openvino_models/ir --precisions FP16
+
+COPY car.png /root
