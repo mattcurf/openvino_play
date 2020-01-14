@@ -37,7 +37,7 @@ RUN mkdir -p $TEMP_DIR && cd $TEMP_DIR && \
     echo "source $INSTALL_DIR/bin/setupvars.sh" >> /root/.bashrc
 
 RUN cd $INSTALL_DIR/deployment_tools/open_model_zoo/tools/downloader && \
-    for i in squeezenet1.1 face-detection-adas-0001 age-gender-recognition-retail-0013  head-pose-estimation-adas-0001 emotions-recognition-retail-0003; \
+    for i in squeezenet1.1 face-detection-adas-0001 age-gender-recognition-retail-0013  head-pose-estimation-adas-0001 emotions-recognition-retail-0003 vehicle-license-plate-detection-barrier-0106 vehicle-attributes-recognition-barrier-0039 license-plate-recognition-barrier-0001; \
     do python3 ./downloader.py --name $i --output_dir /root/models --cache_dir /root/cache; \
        python3 ./converter.py --mo $INSTALL_DIR/deployment_tools/model_optimizer/mo.py --name $i -d /root/models -o /root/ir --precisions FP16; \
     done
