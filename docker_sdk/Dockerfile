@@ -1,12 +1,8 @@
+# Use the intel-opencl image from ubuntu 18.04 in order to provide OpenCL NEO runtime for Intel Integrated Graphics OpenCL compute
 #FROM ubuntu:18.04
-# Use this image to provide OpenCL NEO runtime for Intel Integrated Graphics OpenCL compute
 FROM intelopencl/intel-opencl:ubuntu-18.04-ppa
 
-ARG DOWNLOAD_LINK=http://registrationcenter-download.intel.com/akdlm/irc_nas/16057/l_openvino_toolkit_p_2019.3.376.tgz
-ARG INSTALL_DIR=/opt/intel/openvino
-ARG TEMP_DIR=/tmp/openvino_installer
-
-# Install prerequisites
+# Install a few minimal prerequisites (the remaining dependencies will be installed below from the Open Vino SDK
 RUN apt-get update && apt-get install -y --no-install-recommends \
       wget \
       cpio \
@@ -20,7 +16,11 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     pip3 install wheel && \
     rm -rf /var/lib/apt/lists/*
 
-# Install OpenVino from SDK
+# Install OpenVino from SDK, combile and build the samples, and add the sample videos require for running select demos
+ARG DOWNLOAD_LINK=http://registrationcenter-download.intel.com/akdlm/irc_nas/16057/l_openvino_toolkit_p_2019.3.376.tgz
+ARG INSTALL_DIR=/opt/intel/openvino
+ARG TEMP_DIR=/tmp/openvino_installer
+
 RUN mkdir -p $TEMP_DIR && cd $TEMP_DIR && \
     wget -c $DOWNLOAD_LINK && \
     tar xf l_openvino_toolkit*.tgz && \
@@ -41,10 +41,9 @@ RUN mkdir -p $TEMP_DIR && cd $TEMP_DIR && \
     git clone https://github.com/intel-iot-devkit/sample-videos.git $INSTALL_DIR/deployment_tools/sample-videos && \
     echo "source $INSTALL_DIR/bin/setupvars.sh" >> /root/.bashrc
 
-# Download and convert select models for use with demos in run.sh
+# Download and convert models for demos.  Each demo indicates which models it requires from the 'models.lst' files in each folder, so we'll
+# use those lists rather than download all of the models 
 RUN cd $INSTALL_DIR/deployment_tools/open_model_zoo/tools/downloader && \
-    for i in squeezenet1.1 face-detection-adas-0001 age-gender-recognition-retail-0013  head-pose-estimation-adas-0001 emotions-recognition-retail-0003 vehicle-license-plate-detection-barrier-0106 vehicle-attributes-recognition-barrier-0039 license-plate-recognition-barrier-0001; \
-    do python3 ./downloader.py --name $i --output_dir /root/models --cache_dir /root/cache; \
-       python3 ./converter.py --mo $INSTALL_DIR/deployment_tools/model_optimizer/mo.py --name $i -d /root/models -o /root/ir --precisions FP16; \
-    done
-
+    for i in `find ../../demos -name models.lst`; do python3 ./downloader.py --list $i -o /root/models; done  && \
+    for i in `ls /root/models/public/`; do python3 ./converter.py --name $i --mo $INSTALL_DIR/deployment_tools/model_optimizer/mo.py -d /root/models; done && \
+    for i in `ls /root/models/intel/`; do python3 ./converter.py --name $i --mo $INSTALL_DIR/deployment_tools/model_optimizer/mo.py -d /root/models; done

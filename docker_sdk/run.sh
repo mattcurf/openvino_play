@@ -1,10 +1,12 @@
 #!/bin/bash
-#docker build -t openvino .
 
-# Benchmark, using CPU
-docker run -it --rm openvino bash -c 'cd /opt/intel/openvino/deployment_tools/inference_engine/samples/build/intel64/Release && ./benchmark_app -i /opt/intel/openvino/deployment_tools/demo/car.png -m /root/ir/public/squeezenet1.1/FP16/squeezenet1.1.xml -pc -niter 1000 -d CPU'
+# Build the docker image for OpenVino environment, supporting CPU, GPU, Myriad on Ubuntu 18.04 based container
+docker build -t openvino .
 
-# Benchmark, using GPU
+# Benchmark app, using CPU (Broken, will fix next check-in)
+#docker run -it --rm openvino bash -c 'cd /opt/intel/openvino/deployment_tools/inference_engine/samples/build/intel64/Release && ./benchmark_app -i /opt/intel/openvino/deployment_tools/demo/car.png -m /root/ir/public/squeezenet1.1/FP16/squeezenet1.1.xml -pc -niter 1000 -d CPU'
+
+# Benchmark app, using GPU
 docker run -it --rm --device /dev/dri:/dev/dri openvino bash -c 'cd /opt/intel/openvino/deployment_tools/inference_engine/samples/build/intel64/Release && ./benchmark_app -i /opt/intel/openvino/deployment_tools/demo/car.png -m /root/ir/public/squeezenet1.1/FP16/squeezenet1.1.xml -pc -niter 1000 -d GPU'
 
 # Interactive Face Detection Demo, using CPU and sample video file, and record results to output.mp4 
