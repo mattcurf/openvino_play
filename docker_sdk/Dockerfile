@@ -44,6 +44,8 @@ RUN mkdir -p $TEMP_DIR && cd $TEMP_DIR && \
 # Download and convert models for demos.  Each demo indicates which models it requires from the 'models.lst' files in each folder, so we'll
 # use those lists rather than download all of the models 
 RUN cd $INSTALL_DIR/deployment_tools/open_model_zoo/tools/downloader && \
+    python3 ./downloader.py --name squeezenet1.1 -o /root/models && \
+    python3 ./converter.py --name squeezenet1.1 --mo $INSTALL_DIR/deployment_tools/model_optimizer/mo.py -d /root/models && \
     for i in `find ../../demos -name models.lst`; do python3 ./downloader.py --list $i -o /root/models; done  && \
     for i in `ls /root/models/public/`; do python3 ./converter.py --name $i --mo $INSTALL_DIR/deployment_tools/model_optimizer/mo.py -d /root/models; done && \
     for i in `ls /root/models/intel/`; do python3 ./converter.py --name $i --mo $INSTALL_DIR/deployment_tools/model_optimizer/mo.py -d /root/models; done
