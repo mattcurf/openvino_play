@@ -1,10 +1,9 @@
 FROM ubuntu:18.04
-
-# Use the intel-opencl image from ubuntu 18.04 in order to provide OpenCL NEO runtime for Intel Integrated Graphics OpenCL compute
-#FROM intelopencl/intel-opencl:ubuntu-18.04-ppa
+ENV DEBIAN_FRONTEND=noninteractive
 
 # Install a few minimal prerequisites (the remaining dependencies will be installed below from the Open Vino SDK
 RUN apt-get update && apt-get install -y --no-install-recommends \
+      software-properties-common \
       wget \
       cpio \
       sudo \
@@ -15,8 +14,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
       python3-pip \
       python3-setuptools \
       libenchant1c2a && \
-    pip3 install wheel && \
-    rm -rf /var/lib/apt/lists/*
+    add-apt-repository ppa:intel-opencl/intel-opencl && apt-get update && \
+    apt-get install -y --no-install-recommends intel-opencl-icd clinfo && \
+    pip3 install wheel 
 
 # Install OpenVino from SDK, combile and build the samples, and add the sample videos require for running select demos
 ARG DOWNLOAD_LINK=http://registrationcenter-download.intel.com/akdlm/irc_nas/16670/l_openvino_toolkit_p_2020.3.194.tgz
@@ -51,5 +51,6 @@ RUN cd $INSTALL_DIR/deployment_tools/open_model_zoo/tools/downloader && \
     python3 ./downloader.py --name squeezenet1.1 -o /root/models && \
     python3 ./converter.py --name squeezenet1.1 --mo $INSTALL_DIR/deployment_tools/model_optimizer/mo.py -d /root/models && \
     for i in `find ../../demos -name models.lst`; do python3 ./downloader.py --list $i -o /root/models; done 
-#    for i in `ls /root/models/public/`; do python3 ./converter.py --name $i --mo $INSTALL_DIR/deployment_tools/model_optimizer/mo.py -d /root/models; done && \
-#    for i in `ls /root/models/intel/`; do python3 ./converter.py --name $i --mo $INSTALL_DIR/deployment_tools/model_optimizer/mo.py -d /root/models; done
+
+# The MediaSDK libraries break OpenCL NEO somehow. 
+RUN rm /etc/ld.so.conf.d/intel-mediasdk.conf && ldconfig
