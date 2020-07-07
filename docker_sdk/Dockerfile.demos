@@ -1,0 +1,18 @@
+FROM openvino-base:2020.3
+
+ARG INSTALL_DIR=/opt/intel/openvino
+
+RUN \ 
+    mkdir $INSTALL_DIR/deployment_tools/inference_engine/samples/build && cd $INSTALL_DIR/deployment_tools/inference_engine/samples/build && \
+    /bin/bash -c "source $INSTALL_DIR/bin/setupvars.sh && cmake ../cpp && make --jobs=$(nproc --all)" && \
+    mkdir $INSTALL_DIR/deployment_tools/open_model_zoo/demos/build && cd $INSTALL_DIR/deployment_tools/open_model_zoo/demos/build && \
+    /bin/bash -c "source $INSTALL_DIR/bin/setupvars.sh && cmake .. && make --jobs=$(nproc --all)" && \
+    rm -rf $TEMP_DIR && \
+    git clone https://github.com/intel-iot-devkit/sample-videos.git $INSTALL_DIR/deployment_tools/sample-videos && \
+    echo "source $INSTALL_DIR/bin/setupvars.sh" >> /root/.bashrc
+
+RUN \
+  cd $INSTALL_DIR/deployment_tools/open_model_zoo/tools/downloader && \
+  python3 ./downloader.py --name squeezenet1.1 -o /root/models && \
+  python3 ./converter.py --name squeezenet1.1 --mo $INSTALL_DIR/deployment_tools/model_optimizer/mo.py -d /root/models 
+  for i in `find ../../demos -name models.lst`; do python3 ./downloader.py --list $i -o /root/models; done 
