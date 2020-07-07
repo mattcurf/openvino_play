@@ -1,4 +1,3 @@
 FROM openvino-base:2020.3
 
-RUN echo "source /opt/intel/openvino/bin/setupvars.sh" >> /etc/bash.bashrc
-RUN bash -c "source /opt/intel/openvino/bin/setupvars.sh && /opt/intel/openvino/data_processing/dl_streamer/samples/download_models.sh"
+RUN bash /opt/intel/openvino/data_processing/dl_streamer/samples/download_models.sh
