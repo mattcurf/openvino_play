@@ -1,3 +1,0 @@
-FROM openvino-base:2020.3
-
-RUN bash /opt/intel/openvino/data_processing/dl_streamer/samples/download_models.sh
