@@ -17,7 +17,7 @@ To build the containers, type:
 $ ./build.sh
 ```
 
-To execute the 'hello_query_device' app to print information about CPU, GPU, and NPU devices:
+To execute the 'hello_query_device' app to print information about CPU, GPU, and NPU devices, then run benchmarks for CPU, GPU, and NPU using the resnet50 model:
 ```
 $ ./run.sh
 ```
