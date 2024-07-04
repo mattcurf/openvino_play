@@ -13,5 +13,5 @@ if [ "$HAS_GPU" == "1" ]; then
 fi
 
 if [ "$HAS_NPU" == "1" ]; then
-  /echo root/openvino_cpp_samples_build/intel64/Release/benchmark_app -m model/ir_model/resnet50_fp16.xml -d NPU -hint throughput -niter 1000
+  /root/openvino_cpp_samples_build/intel64/Release/benchmark_app -m model/ir_model/resnet50_fp16.xml -d NPU -hint throughput -niter 1000
 fi
