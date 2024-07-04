@@ -1,40 +1,24 @@
 FROM ubuntu:22.04
-ENV DEBIAN_FRONTEND noninteractive
+ENV DEBIAN_FRONTEND=noninteractive
 ENV TZ=america/los_angeles
 
-# #1 install base packages
-#-----------------------
 RUN apt update && \
-  apt install --no-install-recommends -q -y \
-    ca-certificates \
-    clinfo \
-    gnupg \
-    libtbb12 \ 
-    ocl-icd-libopencl1 \
-    software-properties-common \
+    apt install --no-install-recommends -q -y \
+    build-essential \
+    cmake \
+    python3 \
+    python3-pip \
     wget
 
-# #2 Install Intel GPU compute user-space drivers
-#-----------------------
-RUN mkdir -p /tmp/gpu && \
- cd /tmp/gpu && \
- wget https://github.com/oneapi-src/level-zero/releases/download/v1.16.1/level-zero_1.16.1+u22.04_amd64.deb && \
- wget https://github.com/intel/intel-graphics-compiler/releases/download/igc-1.0.16510.2/intel-igc-core_1.0.16510.2_amd64.deb && \
- wget https://github.com/intel/intel-graphics-compiler/releases/download/igc-1.0.16510.2/intel-igc-opencl_1.0.16510.2_amd64.deb && \
- wget https://github.com/intel/compute-runtime/releases/download/24.13.29138.7/intel-level-zero-gpu_1.3.29138.7_amd64.deb && \
- wget https://github.com/intel/compute-runtime/releases/download/24.13.29138.7/intel-opencl-icd_24.13.29138.7_amd64.deb && \
- wget https://github.com/intel/compute-runtime/releases/download/24.13.29138.7/libigdgmm12_22.3.18_amd64.deb && \
- dpkg -i *.deb && \
- rm *.deb
+RUN mkdir /opt/intel && \
+  wget https://storage.openvinotoolkit.org/repositories/openvino/packages/2024.2/linux/l_openvino_toolkit_ubuntu22_2024.2.0.15519.5c0f38f83f6_x86_64.tgz --output-document openvino_2024.2.0.tgz && \
+  tar xf openvino_2024.2.0.tgz && \
+  rm openvino_2024.2.0.tgz && \
+  mv l_openvino_toolkit_ubuntu22_2024.2.0.15519.5c0f38f83f6_x86_64 /opt/intel/openvino_2024.2.0 && \
+  cd /opt/intel/openvino_2024.2.0  && \
+  ./install_dependencies/install_openvino_dependencies.sh -y && \
+  python3 -m pip install -r ./python/requirements.txt && \
+  python3 -m pip install torch torchvision
 
-# Required compute runtime level-zero variables
-ENV ZES_ENABLE_SYSMAN=1
-
-# #3 Install intel NPU compute user-space drivers
-RUN mkdir -p /tmp/npu && \
-  cd /tmp/npu && \
-  wget https://github.com/intel/linux-npu-driver/releases/download/v1.2.0/intel-driver-compiler-npu_1.2.0.20240404-8553879914_ubuntu22.04_amd64.deb && \
-  wget https://github.com/intel/linux-npu-driver/releases/download/v1.2.0/intel-level-zero-npu_1.2.0.20240404-8553879914_ubuntu22.04_amd64.deb && \
-  dpkg -i *.deb && \
-  rm *.deb
-
+RUN /bin/bash -c "source /opt/intel/openvino_2024.2.0/setupvars.sh && \
+  /opt/intel/openvino_2024.2.0/samples/cpp/build_samples.sh"

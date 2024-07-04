@@ -1,4 +1,5 @@
 #!/bin/bash
-docker build -t intel-gpu-npu-driver docker 
-docker build -t intel-gpu-npu-openvino -f docker/Dockerfile.openvino docker
+docker build -t openvino-base -f docker/Dockerfile docker
+docker build -t openvino-gpu -f docker/Dockerfile.gpu docker 
+docker build -t openvino-gpu-npu -f docker/Dockerfile.npu docker 
 
