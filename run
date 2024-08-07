@@ -1,14 +1,12 @@
 #!/bin/bash
 
-_docker_image=openvino-base
+_docker_image=openvino
 
 if [ -d "/dev/dri" ]; then
-  _docker_image=openvino-gpu
   _args="--device /dev/dri:/dev/dri -v /tmp/.X11-unix:/tmp/.X11-unix -e DISPLAY=$DISPLAY -e HAS_GPU=1"
 fi
 
 if [ -d "/dev/accel" ]; then
-  _docker_image=openvino-gpu-npu
   _args+=" --device /dev/accel:/dev/accel -e HAS_NPU=1"
 fi
 
