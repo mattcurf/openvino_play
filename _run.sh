@@ -16,7 +16,8 @@ python3 ./download_resnet50.py
 /root/openvino_cpp_samples_build/$ARCH/Release/benchmark_app -m model/ir_model/resnet50_fp16.xml -d CPU -hint throughput -niter 1000
 
 if [ "$HAS_GPU" == "1" ]; then
-  /root/openvino_cpp_samples_build/$ARCH/Release/benchmark_app -m model/ir_model/resnet50_fp16.xml -d GPU -hint throughput -niter 1000
+  GPU_DEVICE=$(python3 ./gpu_select.py)
+  /root/openvino_cpp_samples_build/$ARCH/Release/benchmark_app -m model/ir_model/resnet50_fp16.xml -d $GPU_DEVICE -hint throughput -niter 1000
 fi
 
 if [ "$HAS_NPU" == "1" ]; then
