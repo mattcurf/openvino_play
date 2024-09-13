@@ -2,10 +2,11 @@
 source /root/miniforge3/bin/activate ov
 source /opt/intel/openvino_2024.3.0/setupvars.sh
 
-ARCH=$(uname -i)
-if [ "$ARCH" == 'x86_64' ];
-then 
+ARCH=$(uname -m)
+if [ "$ARCH" = 'x86_64' ]; then
   ARCH=intel64
+elif [ "$ARCH" = 'arm64' ]; then
+  ARCH=aarch64
 fi
 
 # Run query
