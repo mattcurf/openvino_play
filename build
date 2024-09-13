@@ -1,5 +1,8 @@
 #!/bin/bash
 
-arch=$(uname -i)
-docker build -t openvino -f Dockerfile.$arch .
+if [ "$1" = "-f" ]; then
+  args+="--no-cache "
+fi
+
+docker build --progress plain -t ${PWD##*/} $args -f Dockerfile.$(uname -i) .
 
