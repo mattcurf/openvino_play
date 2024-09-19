@@ -1,6 +1,6 @@
 #!/bin/bash
 source /root/miniforge3/bin/activate ov
-source /opt/intel/openvino_2024.3.0/setupvars.sh
+source /opt/intel/openvino_2024.4.0/setupvars.sh
 
 ARCH=$(uname -m)
 if [ "$ARCH" = 'x86_64' ]; then
