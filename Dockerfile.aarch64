@@ -17,11 +17,11 @@ RUN wget "https://github.com/conda-forge/miniforge/releases/latest/download/Mini
 
 # OpenVINO via package
 RUN mkdir -p /opt/intel && \
-  wget https://storage.openvinotoolkit.org/repositories/openvino/packages/2024.3/linux/l_openvino_toolkit_ubuntu20_2024.3.0.16041.1e3b88e4e3f_arm64.tgz --output-document openvino_2024.3.0.tgz && \
-  tar xf openvino_2024.3.0.tgz && \
-  rm openvino_2024.3.0.tgz && \
-  mv l_openvino_toolkit_ubuntu20_2024.3.0.16041.1e3b88e4e3f_arm64 /opt/intel/openvino_2024.3.0 && \
-  cd /opt/intel/openvino_2024.3.0  && \
+  wget https://storage.openvinotoolkit.org/repositories/openvino/packages/2024.4/linux/l_openvino_toolkit_ubuntu20_2024.4.0.16579.c3152d32c9c_arm64.tgz --output-document openvino_2024.4.0.tgz && \
+  tar xf openvino_2024.4.0.tgz && \
+  rm openvino_2024.4.0.tgz && \
+  mv l_openvino_toolkit_ubuntu20_2024.4.0.16579.c3152d32c9c_arm64 /opt/intel/openvino_2024.4.0 && \
+  cd /opt/intel/openvino_2024.4.0  && \
   ./install_dependencies/install_openvino_dependencies.sh -y && \
   /bin/bash -c "source /root/miniforge3/bin/activate && \
   conda create -n ov python=3.10* -y" && \
@@ -29,5 +29,5 @@ RUN mkdir -p /opt/intel && \
   pip install --upgrade pip && \
   pip install -r ./python/requirements.txt torch torchvision nncf"
 
-RUN /bin/bash -c "source /opt/intel/openvino_2024.3.0/setupvars.sh && \
-  /opt/intel/openvino_2024.3.0/samples/cpp/build_samples.sh"
+RUN /bin/bash -c "source /opt/intel/openvino_2024.4.0/setupvars.sh && \
+  /opt/intel/openvino_2024.4.0/samples/cpp/build_samples.sh"
