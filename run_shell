@@ -4,6 +4,9 @@ _docker_image=${PWD##*/}
 
 if [ -d "/dev/dri" ]; then
   _args="--device /dev/dri:/dev/dri -v /tmp/.X11-unix:/tmp/.X11-unix -e DISPLAY=$DISPLAY -e HAS_GPU=1"
+  if [ -d "/usr/lib/wsl" ]; then
+    _args+=" --device /dev/dxg:/dev/dxg -v /usr/lib/wsl:/usr/lib/wsl"
+  fi
 fi
 
 if [ -d "/dev/accel" ]; then
