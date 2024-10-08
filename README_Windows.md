@@ -1,6 +1,6 @@
-# Windows instructions
+# openvino_play for Windows Instructions
 
-Although Windows 11 supports Intel GPU pass-through when using WSL2, there is no associated Docker Desktop support for Intel GPU passthrough for Windows based containers.  The instructions below walk through the manual step-by-step instructions for setting up using the Windows cmd.exe terminal
+This repo demonstrates the setup of all required Intel GPU and NPU user-space drivers for use with OpenVINO 2024.4 and Windows manually using the cmd.exe terminal. (Although Windows 11 supports Intel GPU pass-through when using WSL2 and Docker, there is no associated Docker Desktop support for Intel GPU passthrough for native Windows based containers.) It has been tested on a Intel 13th Gen Intel(R) Core(TM) i9-13900H,  Intel(R) Core(TM) Ultra 5 125H processor, Intel(R) Core(TM) Ultra 7 258V processor, and 13th Gen Intel(R) Core(TM) i7-13700K with Intel(R) ARC A770 Discrete GPU
 
 ## Prerequisites
 The following software should be installed as prerequisites:
