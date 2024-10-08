@@ -2,6 +2,8 @@
 
 This repo demonstrates the setup of all required Intel GPU and NPU user-space drivers for use with OpenVINO 2024.4 and Linux. It has been tested on a Intel 13th Gen Intel(R) Core(TM) i9-13900H,  Intel(R) Core(TM) Ultra 5 125H processor, Intel(R) Core(TM) Ultra 7 258V processor, and 13th Gen Intel(R) Core(TM) i7-13700K with Intel(R) ARC A770 Discrete GPU
 
+*Note*: For Windows instructions, see [README_Windows.md](README_Windows.md)
+
 ## Prerequisite
 * Ubuntu 24.04 with kernel 6.8.0-36-generic or newer (for Intel GPU kernel driver support) or Windows 11
 * Installed Docker (for Linux) or Docker Decktop (for Windows/WSL2)
