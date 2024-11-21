@@ -1,6 +1,6 @@
 #!/bin/bash
 source /root/miniforge3/bin/activate ov
-source /opt/intel/openvino_2024.4.0/setupvars.sh
+source /opt/intel/openvino_2024.5.0/setupvars.sh
 
 ARCH=$(uname -m)
 if [ "$ARCH" = 'x86_64' ]; then
@@ -23,8 +23,5 @@ if [ "$HAS_GPU" == "1" ]; then
 fi
 
 if [ "$HAS_NPU" == "1" ]; then
-  # Workaround for defect https://github.com/intel/linux-npu-driver/issues/44
-  sed -i "s/type=\"MaxPool\" version=\"opset14\"/type=\"MaxPool\" version=\"opset8\"/g" /tmp/model/ir_model/resnet50_fp16.xml
-
   /root/openvino_cpp_samples_build/$ARCH/Release/benchmark_app -m /tmp/model/ir_model/resnet50_fp16.xml -d NPU -hint throughput -niter 1000
 fi
