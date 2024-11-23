@@ -42,14 +42,10 @@ Note: This configuration above grants full root access of the container to your 
 
 ## Usage
 
-To build the containers, type:
+To run benchmarks for CPU, GPU, and NPU using the resnet50 model:
 ```
-$ ./build
-```
-
-To execute the 'hello_query_device' app to print information about CPU, GPU, and NPU devices, then run benchmarks for CPU, GPU, and NPU using the resnet50 model:
-```
-$ ./run
+$ sudo apt install make
+$ make
 ```
 
 ## WSL
