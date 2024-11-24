@@ -23,7 +23,8 @@ RUN conda create -n ov python=3.11* -y && \
   pip install --upgrade pip && \
   pip install openvino-dev[onnx,pytorch]"
 
-COPY _run.sh /tmp/run.sh
+COPY scripts/run.sh /tmp/
+COPY scripts/download_resnet50.py /tmp/
 
 ENTRYPOINT ["conda", "run", "--no-capture-output", "-n", "ov", "/bin/bash", "/tmp/run.sh"]
 

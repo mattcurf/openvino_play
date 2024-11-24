@@ -1,5 +1,7 @@
 #!/bin/bash
 
+cd /tmp
+
 # Download and export model
 python ./download_resnet50.py
 

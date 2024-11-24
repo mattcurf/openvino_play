@@ -6,7 +6,7 @@ ifeq ($(ARCH),arm64)
 endif
 
 DOCKER_IMAGE_NAME = $(shell basename `pwd`)
-DOCKER_ARGS = -it --rm -v $(CURRENT_DIR):/workspace -w /workspace --security-opt seccomp=unconfined 
+DOCKER_ARGS = -it --rm --security-opt seccomp=unconfined 
 
 ifeq ($(shell [ -d "/dev/dri" ] && echo yes),yes)
   DOCKER_ARGS += --device /dev/dri:/dev/dri -v /tmp/.X11-unix:/tmp/.X11-unix -e DISPLAY=$(DISPLAY) -e HAS_GPU=1
@@ -23,15 +23,15 @@ DOCKER_ARGS += $(DOCKER_IMAGE_NAME)
 
 default: run_benchmark
 
-build:
+image:
 	@echo "Building Docker image $(DOCKER_IMAGE_NAME)..."
 	@docker build . --progress plain -f Dockerfile.$(ARCH) -t $(DOCKER_IMAGE_NAME)
 
 clean:
 	@docker rmi $(DOCKER_IMAGE_NAME)
 
-run_benchmark: build
+run_benchmark: image
 	@docker run $(DOCKER_ARGS)
 
-shell: build
+shell: image 
 	@docker run $(DOCKER_ARGS) /bin/bash
