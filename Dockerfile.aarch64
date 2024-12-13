@@ -1,33 +1,30 @@
-FROM ubuntu:22.04
+FROM ubuntu:24.04
+
 ENV DEBIAN_FRONTEND=noninteractive
 ENV TZ=america/los_angeles
 ENV PIP_ROOT_USER_ACTION=ignore
+ENV PATH=/root/miniforge3/bin:$PATH
 
-# Base packages
+SHELL ["/bin/bash", "--login", "-c"]
+
 RUN apt update && \
     apt install --no-install-recommends -q -y \
-    build-essential \
-    ocl-icd-libopencl1 \
+    libgl1 \
     software-properties-common \
     wget 
 
-# Python
-RUN wget "https://github.com/conda-forge/miniforge/releases/latest/download/Miniforge3-$(uname)-$(uname -m).sh" && \
-  bash Miniforge3-$(uname)-$(uname -m).sh -b 
+RUN cd /tmp && \
+  wget "https://github.com/conda-forge/miniforge/releases/latest/download/Miniforge3-$(uname)-$(uname -m).sh" && \
+  bash Miniforge3-$(uname)-$(uname -m).sh -b && \
+  rm Miniforge3-$(uname)-$(uname -m).sh 
 
-# OpenVINO via package
-RUN mkdir -p /opt/intel && \
-  wget https://storage.openvinotoolkit.org/repositories/openvino/packages/2024.5/linux/l_openvino_toolkit_ubuntu20_2024.5.0.17288.7975fa5da0c_arm64.tgz --output-document openvino_2024.5.0.tgz && \
-  tar xf openvino_2024.5.0.tgz && \
-  rm openvino_2024.5.0.tgz && \
-  mv l_openvino_toolkit_ubuntu20_2024.5.0.17288.7975fa5da0c_arm64 /opt/intel/openvino_2024.5.0 && \
-  cd /opt/intel/openvino_2024.5.0  && \
-  ./install_dependencies/install_openvino_dependencies.sh -y && \
-  /bin/bash -c "source /root/miniforge3/bin/activate && \
-  conda create -n ov python=3.10* -y" && \
+RUN conda create -n ov python=3.11* -y && \
   /bin/bash -c "source /root/miniforge3/bin/activate ov && \
   pip install --upgrade pip && \
-  pip install -r ./python/requirements.txt torch torchvision nncf"
+  pip install openvino-dev[onnx,pytorch]"
 
-RUN /bin/bash -c "source /opt/intel/openvino_2024.5.0/setupvars.sh && \
-  /opt/intel/openvino_2024.5.0/samples/cpp/build_samples.sh"
+COPY scripts/run.sh /tmp/
+COPY scripts/download_resnet50.py /tmp/
+
+ENTRYPOINT ["conda", "run", "--no-capture-output", "-n", "ov", "/bin/bash", "/tmp/run.sh"]
+
