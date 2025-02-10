@@ -25,11 +25,11 @@ RUN mkdir -p /tmp/gpu && \
 # Intel GPU compute user-space drivers
 RUN mkdir -p /tmp/gpu && \
  cd /tmp/gpu && \
- wget https://github.com/intel/intel-graphics-compiler/releases/download/igc-1.0.17537.20/intel-igc-core_1.0.17537.20_amd64.deb && \
- wget https://github.com/intel/intel-graphics-compiler/releases/download/igc-1.0.17537.20/intel-igc-opencl_1.0.17537.20_amd64.deb && \
- wget https://github.com/intel/compute-runtime/releases/download/24.35.30872.22/intel-level-zero-gpu_1.3.30872.22_amd64.deb && \
- wget https://github.com/intel/compute-runtime/releases/download/24.35.30872.22/intel-opencl-icd_24.35.30872.22_amd64.deb && \
- wget https://github.com/intel/compute-runtime/releases/download/24.35.30872.22/libigdgmm12_22.5.0_amd64.deb && \
+ wget https://github.com/intel/intel-graphics-compiler/releases/download/v2.5.6/intel-igc-core-2_2.5.6+18417_amd64.deb && \
+ wget https://github.com/intel/intel-graphics-compiler/releases/download/v2.5.6/intel-igc-opencl-2_2.5.6+18417_amd64.deb && \
+ wget https://github.com/intel/compute-runtime/releases/download/24.52.32224.5/intel-level-zero-gpu_1.6.32224.5_amd64.deb && \
+ wget https://github.com/intel/compute-runtime/releases/download/24.52.32224.5/intel-opencl-icd_24.52.32224.5_amd64.deb && \
+ wget https://github.com/intel/compute-runtime/releases/download/24.52.32224.5/libigdgmm12_22.5.5_amd64.deb && \
  dpkg -i *.deb && \
  rm *.deb
 
@@ -51,9 +51,5 @@ RUN conda create -n ov python=3.11* -y && \
   pip install --upgrade pip && \
   pip install openvino-dev[onnx,pytorch]"
 
-COPY scripts/run.sh /tmp/
-COPY scripts/download_resnet50.py /tmp/
-COPY scripts/gpu_select.py /tmp/
-
-ENTRYPOINT ["conda", "run", "--no-capture-output", "-n", "ov", "/bin/bash", "/tmp/run.sh"]
+ENTRYPOINT ["conda", "run", "--no-capture-output", "-n", "ov", "/bin/bash", "/project/scripts/run.sh"]
 

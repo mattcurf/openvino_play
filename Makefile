@@ -6,7 +6,7 @@ ifeq ($(ARCH),arm64)
 endif
 
 DOCKER_IMAGE_NAME = $(shell basename `pwd`)
-DOCKER_ARGS = -it --rm --security-opt seccomp=unconfined 
+DOCKER_ARGS = -it --rm --security-opt seccomp=unconfined -v `pwd`:/project -w /project 
 
 ifeq ($(shell [ -d "/dev/dri" ] && echo yes),yes)
   DOCKER_ARGS += --device /dev/dri:/dev/dri -v /tmp/.X11-unix:/tmp/.X11-unix -e DISPLAY=$(DISPLAY) -e HAS_GPU=1
@@ -34,4 +34,4 @@ run_benchmark: image
 	@docker run $(DOCKER_ARGS)
 
 shell: image 
-	@docker run $(DOCKER_ARGS) /bin/bash
+	@docker run --entrypoint /bin/bash $(DOCKER_ARGS)
